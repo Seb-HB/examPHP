@@ -21,8 +21,8 @@ function checkPlayerValidity(){
         $errors[] = 'Le poste sélectionné n\'est pas valide';
     }
 
+    return $errors;
     }
 
-    return $errors;
 
 ?>

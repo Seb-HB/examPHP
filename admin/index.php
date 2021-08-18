@@ -16,9 +16,14 @@
     include '../global/layouts/var.php';
     include '../global/functions/bdd.php';
     $bdd=connectBDD();
+    if(isset($_GET['del'])){
+        deletePlayer($bdd, $_GET['del']);
+        $_SESSION['message']['statut']=1;
+        $_SESSION['message']['text']='Joueur supprimé avec succes';
+    }
     isset($_GET["add"])? $activeMenu=['', 'active']: $activeMenu=['active', ''];
     ?>
-    <header>
+    <header class="mb-5">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#"><img src="../public/img/FFF.png" alt="Logo FFF"></a>
@@ -31,8 +36,6 @@
                     <div class="navbar-nav">
                         <a class="nav-link <?php echo($activeMenu[0]) ?>" aria-current="page" href="index.php">Liste des joueurs</a>
                         <a class="nav-link <?php echo($activeMenu[1]) ?>" href="index.php?add=1">Ajouter un joueur</a>
-                        <!-- <a class="nav-link" href="#">Pricing</a>
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
                     </div>
                 </div>
             </div>
@@ -42,10 +45,21 @@
         <?php
         if (isset($_GET['add'])){
             include 'layouts/addplayer.php';
+        }elseif(isset($_GET['edit'])){
+            include 'layouts/edit-player.php';
         }else{
             include 'layouts/admin.php';
         }
         ?>
+        <div class="col-2 offset-5 text-center">
+            <?php
+            if (isset($_SESSION['message'])){
+                ($_SESSION['message']['statut']==0)? $class='bg-danger': $class='bg-success';
+                echo('<p class="p-3 '.$class.'">'.$_SESSION['message']['text'].'</p>');
+                unset($_SESSION['message']);
+            }
+            ?>
+        </div>
     </main>
 
 

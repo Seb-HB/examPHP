@@ -21,10 +21,20 @@ function connectBDD(){
 
 
 function getAllPlayers($bdd){
-    $request = $bdd->prepare("SELECT * FROM team");
+    $request = $bdd->prepare("SELECT `id`,`prenom`,`nom` , TIMESTAMPDIFF(YEAR, `date_daissance`, DATE(NOW())) age,`poste`
+    FROM `team` ");
     $request->execute();
 
     $resultat = $request->fetchAll();
+
+    return $resultat;
+}
+
+function getPlayer($bdd, $id){
+    $request = $bdd->prepare("SELECT * FROM `team` WHERE id= :id");
+    $request->execute(['id'=> $id]);
+
+    $resultat = $request->fetch();
 
     return $resultat;
 }
@@ -33,53 +43,51 @@ function getAllPlayers($bdd){
 function addPlayer($bdd, $prenom, $nom, $date, $poste){
     try {
         $request = $bdd->prepare("INSERT INTO team (prenom, nom, date_daissance, poste)
-    VALUE (:prenom, :nom, :date_naissance, :poste)");
+                                VALUE (:prenom, :nom, :date_naissance, :poste)");
 
         $request->execute(
             [
                 'prenom'=> $prenom,
                 'nom'=> $nom,
-                'date_daissance'=> $date,
+                'date_naissance'=> $date,
                 'poste'=> $poste
             ]);
+
+            $_SESSION['message']['statut']=1;
+            $_SESSION['message']['text']='Joueur ajouté avec succes';
     } catch (\PDOException $e){
         // var_dump($e);
-        $_SESSION['addPlayer']='error';
+        $_SESSION['message']['statut']=0;
+        $_SESSION['message']['text']='l\'enregistrement a échoué, veuillez réessayer';
     }
 
-    $_SESSION['addPlayer']='success';
 }
 
-// function getAllArticles($pdo){
-//     $request = $pdo->prepare("SELECT * FROM annonce");
-//     $request->execute();
+function deletePlayer($bdd, $id){
+    $request = $bdd->prepare('DELETE FROM team WHERE id = :id');
+    $request->execute(['id'=> $id]);
+}
 
-//     $resultat = $request->fetchAll();
+function editPlayer($bdd, $id, $prenom, $nom, $birthdate, $poste){
+    try{
+        $request = $bdd->prepare("UPDATE team SET prenom = :prenom, nom = :nom, date_daissance = :birthdate, poste= :poste WHERE id = :id");
+    
+        $request->execute([
+            'prenom'=> $prenom,
+            'nom'=> $nom,
+            'birthdate'=> $birthdate,
+            'poste'=>$poste,
+            'id'=> $id
+        ]);
+        $_SESSION['message']['statut']=1;
+        $_SESSION['message']['text']='Joueur modifié avec succes';
+    } catch (\PDOException $e){
+        var_dump($e);
+        $_SESSION['message']['statut']=0;
+        $_SESSION['message']['text']='la modification a échouée, veuillez réessayer';
+    }
+}
 
-//     return $resultat;
-// }
 
-// function deleteArticle($pdo, $idToDelete){
-//     $request = $pdo->prepare('DELETE FROM annonce WHERE id = :id');
-//     $request->execute(['id'=> $idToDelete]);
-// }
 
-// function getOneArticle($pdo, $id){
-//     $request = $pdo->prepare("SELECT * FROM annonce WHERE id = :id");
-//     $request->execute(['id'=> $id]);
 
-//     return $request->fetch();
-// }
-
-// function editArticle($pdo, $titre, $type, $contenu, $imageLink, $id){
-//     $request = $pdo->prepare("UPDATE annonce SET titre = :titre, type = :type,
-//                image_lien = :image, contenu = :contenu WHERE id = :id");
-
-//     $request->execute([
-//         'titre'=> $titre,
-//         'type'=> $type,
-//         'contenu'=> $contenu,
-//         'image'=> $imageLink,
-//         'id'=> $id
-//     ]);
-// }
