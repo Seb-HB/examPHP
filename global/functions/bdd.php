@@ -88,6 +88,13 @@ function editPlayer($bdd, $id, $prenom, $nom, $birthdate, $poste){
     }
 }
 
+function getuserByName($bdd, $name){
+    $request = $bdd->prepare("SELECT * FROM `user` WHERE username= :username");
+    $request->execute(['username'=> $name]);
+    $resultat = $request->fetch();
+    return $resultat;
+}
+
 
 
 

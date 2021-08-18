@@ -24,5 +24,26 @@ function checkPlayerValidity(){
     return $errors;
     }
 
+    function checkUserValidity($bdd){
+        $errors = [];
+
+        if(empty($_POST['login']) || empty($_POST['pwd'])){
+            $errors[] = 'Vous devez saisir un identifiant et un mot de passe';
+        }else{
+            // var_dump($_POST);
+            $user= getuserByName($bdd, $_POST['login']);
+            // var_dump($user);
+            die();
+            if(!$user){
+                $errors[] ='Utilisateur inconnu';
+            }elseif(!password_verify($_POST['pwd'], $user['password'])){
+                $errors[] ='Mot de passe incorrect';
+            }
+        }
+
+        
+        return $errors;
+    }
+
 
 ?>
