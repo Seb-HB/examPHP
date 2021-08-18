@@ -1,15 +1,12 @@
 <?php
 include 'functions/check-datas.php';
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
       $errors=checkUserValidity($bdd);
       if(count($errors) == 0){
         $_SESSION['user']=1;
-        var_dump('toto', $_SESSION);
-        header('Location: index.php');
+        // header('Location: index.php');
         // exit();
-
-      }else{
-        echo('mal barré');
       }
 }
 ?>
