@@ -17,7 +17,7 @@
     include '../global/functions/bdd.php';
     $bdd=connectBDD();
 
-    if (isset($_SESSION['user'])){
+    // if (isset($_SESSION['user'])){
         if(isset($_GET['del'])){
             deletePlayer($bdd, $_GET['del']);
             $_SESSION['message']['statut']=1;
@@ -67,10 +67,10 @@
 
         <?php
             include '../global/layouts/footer.php';
-    }else{
-        var_dump($_SESSION);
-        include 'layouts/login.php';
-    }
+    // }else{
+    //     var_dump($_SESSION);
+    //     include 'layouts/login.php';
+    // }
     ?>
 </body>
 
